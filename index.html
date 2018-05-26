@@ -1,27 +1,75 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link href="stylesheet.css" rel="stylesheet" type="text/css">
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
-  </head>
-  <body>
     <script>
 
-      $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+      var new_tweets = function(prevIndex) {
+        var $tweets = $('#tweets');
+           var index = streams.home.length - 1;
+         for(var i = prevIndex; i <= index; i++) {
+          var tweet = streams.home[i];
+          var $tweet = $('<div id="tweet"></div>');
+          $tweet.html('@' + '<a href=\"no-javascript.html\" id=\"tweeter\">' + tweet.user + '</a>' + '</>' + ': ' + tweet.message + ' [posted: ' + '<i>' + tweet.created_at + '</i>' + ']');
+          $tweet.prependTo($tweets);
         }
+        return index;
+      };
+
+     var user_timeline = function(user) {
+       var $tweets = $('#tweets');
+       $('#tweets').html("");
+       var index = streams.users[user].length - 1;
+       for(var i = 0; i <= index; i++) {
+         var tweet = streams.users[user][i];
+         var $tweet = $('<div id="tweet"></div>');
+         $tweet.html('@' + '<a href=\"no-javascript.html\" id=\"tweeter\">' + tweet.user + '</a>' + '</>' + ': ' + tweet.message + ' [posted: ' + '<i>' + tweet.created_at + '</i>' + ']');
+         $tweet.prependTo($tweets);
+       }
+       return index;
+      }
+
+    $(document).ready(function(){
+        var prevIndex = 0;
+        prevIndex = new_tweets(prevIndex);
+        // prevIndex = user_timeline(prevIndex);
+        $('#get_tweets').click(function() { 
+          new_tweets(prevIndex);
+        });
+        // $('#tweeter').click(function() { 
+        //   user_timeline();
+        // });
+
+
+
+      $('#tweets').on('click', '#tweeter', function() {
+          user_timeline($(this).text());
+          return false;
+        });
 
       });
 
+
+     
+
     </script>
+
+
+  </head>
+  <body>
+   
+  <!-- <h1>Welcome to Twittler!</h1> -->
+
+  <div class="topnav">
+  <a class="active">Welcome to Twittler!</a>
+
+  </div>
+
+  <button class = "button" id="get_tweets">See new tweets!</button>
+  <div id="tweets"></div>
+
   </body>
 </html>
